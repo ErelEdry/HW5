@@ -27,7 +27,7 @@ class FalafelStall:
         if order_id not in self.orders:
             raise NoSuchOrderException(order_id)
         if self.orders[order_id][1] != dish:
-            raise NotCustomerDishException(order_id)
+            raise NotCustomerDishException(dish, self.orders[order_id][1])
         self.money += dish.price
         del self.orders[order_id]
 

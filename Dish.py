@@ -19,4 +19,4 @@ class Dish:
 
         def __repr__(self)-> str:
             ingredients_str = ", ".join(self.ingredients)
-            return f"*{ingredients_str}*"
+            return f"* {ingredients_str} *"
