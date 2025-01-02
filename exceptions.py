@@ -1,4 +1,5 @@
 from Dish import Dish
+
 class NoSuchIngredientException(Exception):
     def __init__(self, ingredient: str):
         self.ingredient = ingredient
@@ -27,3 +28,6 @@ class NoSuchOrderException(Exception):
 class OrderOutOfBoundsException(Exception):
     def __init__(self, *args):
         self.args = args
+
+    def __str__(self):
+        return "Error:\nNo orders are available to process."

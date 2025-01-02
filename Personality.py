@@ -5,6 +5,6 @@ class Personality(ABC):
     def adjust_mood(self, mood, waiting_time):
         pass
     def __repr__(self):
-        pass
+        return self.__class__.__name__
 
 
