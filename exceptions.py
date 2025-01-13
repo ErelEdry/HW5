@@ -1,7 +1,6 @@
 from Dish import Dish
-
 class NoSuchIngredientException(Exception):
-    def __init__(self, ingredient: str):
+    def __init__(self, ingredient):
         self.ingredient = ingredient
 
     def __str__(self):
@@ -9,7 +8,7 @@ class NoSuchIngredientException(Exception):
 
 
 class NotCustomerDishException(Exception):
-    def __init__(self, suggested_dish: Dish, expected_dish: Dish):
+    def __init__(self, suggested_dish, expected_dish):
         self.suggested_dish = suggested_dish
         self.expected_dish = expected_dish
 
@@ -18,7 +17,7 @@ class NotCustomerDishException(Exception):
 
 
 class NoSuchOrderException(Exception):
-    def __init__(self, order_id: int):
+    def __init__(self, order_id):
         self.order_id = order_id
 
     def __str__(self):

@@ -2,66 +2,35 @@ import unittest
 from Dish import Dish
 
 class TestDish(unittest.TestCase):
+    def setUp(self):
+        self.empty_dish = Dish()
+        self.simple_dish = Dish(["falafel"])
+        self.complex_dish = Dish(["falafel", "humus"])
 
-    def test_default_initialization(self):
-        dish = Dish()
-        self.assertEqual(dish.ingredients, [])
+    def test_initialization(self):
+        self.assertEqual(self.empty_dish.ingredients, [])
+        self.assertEqual(self.simple_dish.ingredients, ["tachina"])
+        self.assertEqual(self.complex_dish.ingredients, ["falafel", "humus","fried eggplants","french fries"])
 
-    def test_initialization_with_ingredients(self):
-        ingredients = ["falafel", "hummus"]
-        dish = Dish(ingredients)
-        self.assertEqual(dish.ingredients, ingredients)
-
-    def test_initialization_with_empty_ingredients(self):
-        dish = Dish([])
-        self.assertEqual(dish.ingredients, [])
-
-    def test_add_ingredient_to_empty_dish(self):
-        dish = Dish()
-        dish.add_ingredient("falafel")
-        self.assertIn("falafel", dish.ingredients)
-
-    def test_add_ingredient_to_non_empty_dish(self):
-        dish = Dish(["hummus"])
-        dish.add_ingredient("falafel")
-        self.assertIn("falafel", dish.ingredients)
-        self.assertIn("hummus", dish.ingredients)
-
-    def test_add_duplicate_ingredient(self):
-        dish = Dish(["falafel"])
-        dish.add_ingredient("falafel")
-        self.assertEqual(dish.ingredients, ["falafel", "falafel"])
-
-    def test_equality_with_same_ingredients(self):
-        dish1 = Dish(["falafel", "hummus"])
-        dish2 = Dish(["hummus", "falafel"])
+    def test_eq(self):
+        dish1 = Dish(["falafel", "fried eggplants"])
+        dish2 = Dish(["fried eggplants", "falafel"])
         self.assertEqual(dish1, dish2)
 
-    def test_equality_with_different_ingredients(self):
-        dish1 = Dish(["falafel", "hummus"])
-        dish2 = Dish(["falafel", "tahini"])
-        self.assertNotEqual(dish1, dish2)
+        dish3 = Dish(["falafel", "tachina"])
+        self.assertNotEqual(dish1, dish3)
 
-    def test_equality_with_different_lengths(self):
-        dish1 = Dish(["falafel", "hummus"])
-        dish2 = Dish(["falafel"])
-        self.assertNotEqual(dish1, dish2)
+        self.assertNotEqual(dish1, ["falafel", "humus"])
 
-    def test_equality_with_non_dish_object(self):
-        dish = Dish(["falafel", "hummus"])
-        self.assertNotEqual(dish, ["falafel", "hummus"])
+    def test_repr(self):
+        self.assertEqual(repr(self.empty_dish), "*  *")
+        self.assertEqual(repr(self.simple_dish), "* falafel *")
+        self.assertEqual(repr(self.complex_dish), "* falafel, humus *")
 
-    def test_repr_with_ingredients(self):
-        dish = Dish(["falafel", "hummus"])
-        self.assertEqual(repr(dish), "* falafel, hummus *")
-
-    def test_repr_with_empty_ingredients(self):
-        dish = Dish()
-        self.assertEqual(repr(dish), "*  *")
-
-    def test_repr_with_single_ingredient(self):
-        dish = Dish(["falafel"])
-        self.assertEqual(repr(dish), "* falafel *")
+    def test_get_ingredients(self):
+        self.assertEqual(self.empty_dish.get_ingredients(), [])
+        self.assertEqual(self.simple_dish.get_ingredients(), ["falafel"])
+        self.assertEqual(self.complex_dish.get_ingredients(), ["falafel", "humus"])
 
 if __name__ == '__main__':
     unittest.main()

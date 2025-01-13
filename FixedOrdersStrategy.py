@@ -4,7 +4,6 @@ class FixedOrdersStrategy:
         self.current_index = 0
 
     def __iter__(self):
-        self.current_index = 0
         return self
 
     def __next__(self):

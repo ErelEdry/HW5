@@ -1,13 +1,8 @@
 import time
-from Angry import Angry
-from Customer import Customer
+from RandomOrdersStrategy import RandomOrdersStrategy
 from Dish import Dish
 from FalafelStall import FalafelStall
-from FixedOrdersStrategy import FixedOrdersStrategy
-from LeastPatienceCustomerServingStrategy import LeastPatienceCustomerServingStrategy
-from RandomOrdersStrategy import RandomOrdersStrategy
-from TypeA import TypeA
-from exceptions import NoSuchIngredientException, NotCustomerDishException, NoSuchOrderException
+from exceptions import NotCustomerDishException, OrderOutOfBoundsException, NoSuchIngredientException
 
 
 class Game:
@@ -19,6 +14,7 @@ class Game:
         self.game_start = int(time.time())
         self.dictionary_ingredient = {i: ingredient for i, ingredient in enumerate(ingredient_prices.keys())}
         self.customer_counter = 0
+        self.money = 0
 
     def get_lives(self):
         return self.lives
@@ -29,73 +25,70 @@ class Game:
         return current_time - self.game_start
 
     def run(self):
-        stall = FalafelStall(self.serving_strategy, self.ingredient_prices, 0.0, {})
-        orders_iterator = iter(self.orders_strategy)
-
+        something = iter(self.orders_strategy)
         while self.lives > 0:
+            stall = FalafelStall(self.serving_strategy, self.ingredient_prices)
             try:
-                customer, dish = next(orders_iterator)
-                stall.order(customer, dish)
+                group = next(something)
+
+                for customer, dish in group:
+                    stall.order(customer, dish)
+
+                while len(stall.get_orders()) > 0 and self.lives > 0:
+                    try:
+                        order_id = stall.get_next_order_id()
+                        customer, expected_dish = stall.get_order(order_id)
+
+                        while customer.get_patience() > 0:
+                            print("Customer:")
+                            print(customer)
+                            print("Dish: * " + ", ".join(expected_dish.get_ingredients()) + " *")
+                            print("Insert ingredients:")
+                            for key, value in self.dictionary_ingredient.items():
+                                print(f"{key}: {value}")
+
+                            try:
+                                input_ingredients = input()
+                                input_indices = [int(index) for index in input_ingredients.split()]
+
+                                player_ingredients = []
+                                for index in input_indices:
+                                    if index not in self.dictionary_ingredient:
+                                        raise NoSuchIngredientException(f"Ingredient {index} does not exist.")
+                                    player_ingredients.append(self.dictionary_ingredient[index])
+
+                                player_dish = Dish(ingredients=player_ingredients)
+
+                                if sorted(player_dish.get_ingredients()) != sorted(expected_dish.get_ingredients()):
+                                    print(
+                                        f"Failed to serve a Dish to customer\nError:\nThe suggested dish:\t* {', '.join(player_dish.get_ingredients())} *\nis not as expected:\t* {', '.join(expected_dish.get_ingredients())} *.")
+                                    customer.update(waiting_time=customer.get_waiting_time())
+                                    if customer.get_patience() <= 0:
+                                        print("Customer left due to wrong dish!")
+                                        stall.remove_order(order_id)
+                                        self.lives -= 1
+                                        break
+                                else:
+                                    stall.serve_dish(order_id, player_dish)
+                                    stall.remove_order(order_id)
+                                    self.money += stall.get_earning()
+                                    break
+
+                            except (NoSuchIngredientException, ValueError) as e:
+                                print(f"Error: {e}. Try again.")
+                                customer.update(waiting_time=customer.get_waiting_time())
+                                if customer.get_patience() <= 0:
+                                    print("Customer left due to waiting!")
+                                    stall.remove_order(order_id)
+                                    self.lives -= 1
+                                    break
+
+                    except OrderOutOfBoundsException:
+                        print("Error: No orders are available to process.")
+                        break
+
             except StopIteration:
-                pass
-
-            for order_id, (customer, _) in list(stall.get_orders().items()):
-                customer.update()
-                if customer.get_patience() <= 0:
-                    print(f"Customer {customer.name} ran out of patience and left.")
-                    stall.remove_order(order_id)
-                    self.lives -= 1
-
-            try:
-                next_order_id = self.serving_strategy.select_next_order(stall.get_orders())
-                customer, expected_dish = stall.get_orders()[next_order_id]
-
-                print(f"\nCustomer:\n{customer}")
-                print(f"Expected Dish: {expected_dish}")
-                print("Insert ingredients:")
-                for key, value in sorted(self.dictionary_ingredient.items(), key=lambda x: x[0]):
-                    print(f"{key}: {value}")
-
-                ingredients_input = input("Enter ingredient numbers separated by spaces: ").strip().split()
-                suggested_ingredients = [self.dictionary_ingredient[int(i)] for i in ingredients_input if i.isdigit()]
-                suggested_dish = Dish(suggested_ingredients)
-
-                stall.serve_dish(next_order_id, suggested_dish)
-                print(f"Order {next_order_id} served successfully!")
-                stall.remove_order(next_order_id)
-
-            except NotCustomerDishException as e:
-                print(f"Failed to serve a Dish to customer\n{e}")
-                print("Please try again. Make sure to follow the expected dish exactly.")
-                self.lives -= 1
-
-            except Exception as e:
-                print(e)
-                self.lives -= 1
-
-            if not stall.get_orders() and self.lives <= 0:
                 break
 
-        print(f"Game Over. Total Earnings: {stall.get_earning()}")
-
-s_s = LeastPatienceCustomerServingStrategy()
-lst_orders = [
-    [
-        (Customer(0, Angry(), TypeA()), Dish(['french fries', 'humus', 'humus', 'humus']))
-    ]
-]
-
-INGREDIENTS_PRICES = {
-    'green salad': 3,
-    'falafel': 5,
-    'french fries': 4,
-    'coleslaw': 2,
-    'fried eggplants': 3,
-    'tachina': 0,
-    'humus': 1
-}
-
-fixed_strategy = FixedOrdersStrategy(lst_orders)
-random_strategy = RandomOrdersStrategy(3, 5, INGREDIENTS_PRICES)
-g1 = Game(random_strategy, s_s, INGREDIENTS_PRICES)
-g1.run()
+        print("Game Over")
+        print(f"score: {self.money}")

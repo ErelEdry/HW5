@@ -1,3 +1,4 @@
+from abc import ABC
 
 from Mood import Mood
 from Explosive import Explosive
@@ -8,15 +9,15 @@ from Chill import Chill
 from Personality import Personality
 
 class TypeB(Personality):
-    def adjust_mood(self, mood: Mood, waiting_time: float):
+    def adjust_mood(self, mood, waiting_time):
         if waiting_time > 120 and isinstance(mood, Furious):
-            return Explosive()
+            return Explosive(mood.strength)
         elif waiting_time > 90 and isinstance(mood, Angry):
-            return Furious()
+            return Furious(mood.strength)
         elif waiting_time > 60 and isinstance(mood, Calm):
-            return Angry()
+            return Angry(mood.strength)
         elif waiting_time > 30 and isinstance(mood, Chill):
-            return Calm()
+            return Calm(mood.strength)
         return mood
 
     def __repr__(self):

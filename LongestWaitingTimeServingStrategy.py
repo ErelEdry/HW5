@@ -5,7 +5,7 @@ from exceptions import OrderOutOfBoundsException
 
 
 class LongestWaitingTimeServingStrategy(ServingStrategy):
-    def select_next_order(self, orders: dict[int, tuple[Customer, Dish]]):
+    def select_next_order(self, orders):
         if len(orders) == 0:
             raise OrderOutOfBoundsException()
 

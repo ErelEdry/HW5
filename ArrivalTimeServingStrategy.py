@@ -1,10 +1,9 @@
-from Customer import Customer
-from Dish import Dish
+
 from ServingStrategy import ServingStrategy
 from exceptions import OrderOutOfBoundsException
 
 class ArrivalTimeServingStrategy(ServingStrategy):
-        def select_next_order(self, orders: dict[int, tuple[Customer, Dish]]):
+        def select_next_order(self, orders):
             if len(orders) == 0:
                 raise OrderOutOfBoundsException()
 

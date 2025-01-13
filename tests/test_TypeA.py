@@ -1,67 +1,51 @@
 import unittest
-from unittest.mock import Mock
-from Mood import Mood
+from TypeA import TypeA
+from Angry import Angry
 from Explosive import Explosive
 from Furious import Furious
-from Angry import Angry
 from Calm import Calm
-from Chill import Chill
-from TypeB import TypeB
 
-class TestTypeB(unittest.TestCase):
-
+class TestTypeA(unittest.TestCase):
     def setUp(self):
-        self.typeB = TypeB()
+        self.typeA = TypeA()
+        self.calm = Calm()
+        self.angry = Angry()
+        self.furious = Furious()
+        self.explosive = Explosive()
 
-    def test_adjust_mood_explosive(self):
-        mood = Mock(spec=Furious)
-        adjusted_mood = self.typeB.adjust_mood(mood, 121)
-        self.assertIsInstance(adjusted_mood, Explosive)
+    def test_initial_mood(self):
+        current_mood = self.calm
+        new_mood = self.typeA.__adjust_mood(current_mood, 0)
+        self.assertEqual(new_mood, current_mood)
 
-    def test_adjust_mood_furious(self):
-        mood = Mock(spec=Angry)
-        adjusted_mood = self.typeB.adjust_mood(mood, 91)
-        self.assertIsInstance(adjusted_mood, Furious)
+    def test_angry_to_furious(self):
+        current_mood = self.angry
+        new_mood = self.typeA.__adjust_mood(current_mood, 31)
+        self.assertIsInstance(new_mood, Furious)
 
-    def test_adjust_mood_angry(self):
-        mood = Mock(spec=Calm)
-        adjusted_mood = self.typeB.adjust_mood(mood, 61)
-        self.assertIsInstance(adjusted_mood, Angry)
+    def test_furious_to_explosive(self):
+        current_mood = self.furious
+        new_mood = self.typeA.__adjust_mood(current_mood, 41)
+        self.assertIsInstance(new_mood, Explosive)
 
-    def test_adjust_mood_calm(self):
-        mood = Mock(spec=Chill)
-        adjusted_mood = self.typeB.adjust_mood(mood, 31)
-        self.assertIsInstance(adjusted_mood, Calm)
+    def test_no_mood_change_below_threshold(self):
+        test_cases = [
+            (self.calm, 19),
+            (self.angry, 29),
+            (self.furious, 39)
+        ]
+        for current_mood, waiting_time in test_cases:
+            with self.subTest(mood=current_mood, time=waiting_time):
+                new_mood = self.typeA.__adjust_mood(current_mood, waiting_time)
+                self.assertEqual(new_mood, current_mood)
 
-    def test_adjust_mood_no_change(self):
-        mood = Mock(spec=Chill)
-        adjusted_mood = self.typeB.adjust_mood(mood, 29)
-        self.assertIsInstance(adjusted_mood, Mock)
+    def test_explosive_stays_explosive(self):
+        current_mood = self.explosive
+        new_mood = self.typeA.__adjust_mood(current_mood, 100)
+        self.assertIsInstance(new_mood, Explosive)
 
-    def test_adjust_mood_explosive_no_change(self):
-        mood = Mock(spec=Explosive)
-        adjusted_mood = self.typeB.adjust_mood(mood, 150)
-        self.assertIsInstance(adjusted_mood, Mock)
-
-    def test_adjust_mood_furious_no_change(self):
-        mood = Mock(spec=Furious)
-        adjusted_mood = self.typeB.adjust_mood(mood, 100)
-        self.assertIsInstance(adjusted_mood, Mock)
-
-    def test_adjust_mood_angry_no_change(self):
-        mood = Mock(spec=Angry)
-        adjusted_mood = self.typeB.adjust_mood(mood, 70)
-        self.assertIsInstance(adjusted_mood, Mock)
-
-    def test_adjust_mood_calm_no_change(self):
-        mood = Mock(spec=Calm)
-        adjusted_mood = self.typeB.adjust_mood(mood, 40)
-        self.assertIsInstance(adjusted_mood, Mock)
-
-    def test_adjust_mood_chill_no_change(self):
-        mood = Mock(spec=Chill)
-        adjusted_mood = self.typeB.adjust_mood(mood, 20)
-        self.assertIsInstance(adjusted_mood, Mock)
+    def test_repr(self):
+        self.assertEqual(repr(self.typeA), "TypeA")
 
 if __name__ == '__main__':
     unittest.main()

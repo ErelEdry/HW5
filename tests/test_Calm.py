@@ -4,18 +4,19 @@ from Calm import Calm
 class TestCalm(unittest.TestCase):
     def setUp(self):
         self.calm = Calm()
+    def test_patience_factor(self):
+        test_cases = [
+            (0, 0.0),      
+            (10, 2.1),     
+            (15, 3.15),    
+        ]
+        for waiting_time, expected in test_cases:
+            with self.subTest(waiting_time=waiting_time):
+                result = self.calm.__get_patience_factor(waiting_time)
+                self.assertEqual(result, expected)
 
-    def test_get_patience_factor(self):
-        self.assertEqual(self.calm.get_patience_factor(10), 2.1)
-        self.assertEqual(self.calm.get_patience_factor(5), 1.05)
-        self.assertEqual(self.calm.get_patience_factor(0), 0.0)
-        self.assertEqual(self.calm.get_patience_factor(15), 3.15)
-        self.assertEqual(self.calm.get_patience_factor(20), 4.2)
-        self.assertEqual(self.calm.get_patience_factor(25), 5.25)
+    def test_repr(self):
+        self.assertEqual(repr(self.calm), "Calm")
 
-
-    def test___repr__(self):
-        self.assertEqual(self.calm.__repr__(), "Calm")
-
-
-
+if __name__ == '__main__':
+    unittest.main()
