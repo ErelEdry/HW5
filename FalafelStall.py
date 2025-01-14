@@ -1,16 +1,16 @@
 from exceptions import NoSuchIngredientException, NoSuchOrderException, OrderOutOfBoundsException, NotCustomerDishException
-
+from Dish import Dish
 class FalafelStall:
     def __init__(self, strategy, ingredient_prices):
         self.strategy = strategy
-        self.ingredient_prices = ingredient_prices
+        self.__ingredient_prices = ingredient_prices
         self.money = 0.0
         self.orders = dict()
         self.order_count = 0
 
     def order(self, customer, dish):
-        for ingredient in dish.ingredients:
-            if ingredient not in self.ingredient_prices:
+        for ingredient in dish.get_ingredients():
+            if ingredient not in self.__ingredient_prices:
                 raise NoSuchIngredientException(ingredient)
         order_id = self.order_count
         self.orders[order_id] = (customer, dish)
@@ -42,9 +42,9 @@ class FalafelStall:
     def calculate_cost(self, dish):
         cost = 0
         for ingredient in dish.ingredients:
-            if ingredient not in self.ingredient_prices:
+            if ingredient not in self.__ingredient_prices:
                 raise NoSuchIngredientException(ingredient)
-            cost += self.ingredient_prices[ingredient]
+            cost += self.__ingredient_prices[ingredient]
         return cost
 
     def get_orders(self):

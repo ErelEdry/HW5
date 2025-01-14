@@ -7,7 +7,7 @@ class TestFixedOrdersStrategy(unittest.TestCase):
         lst_orders = [1, 2, 3]
         strategy = FixedOrdersStrategy(lst_orders)
         self.assertEqual(strategy.lst_orders, lst_orders)
-        self.assertEqual(strategy.current_index, 0)
+        self.assertEqual(strategy.__current_index, 0)
 
     def test_iteration(self):
         lst_orders = [1, 2, 3]
@@ -16,7 +16,7 @@ class TestFixedOrdersStrategy(unittest.TestCase):
         for order in strategy:
             results.append(order)
         self.assertEqual(results, [1, 2, 3])
-        self.assertEqual(strategy.current_index, 3)
+        self.assertEqual(strategy.__current_index, 3)
 
     def test_next_order(self):
         lst_orders = [1, 2, 3]
@@ -24,7 +24,7 @@ class TestFixedOrdersStrategy(unittest.TestCase):
         self.assertEqual(next(strategy), 1)
         self.assertEqual(next(strategy), 2)
         self.assertEqual(next(strategy), 3)
-        self.assertEqual(strategy.current_index, 3)
+        self.assertEqual(strategy.__current_index, 3)
 
     def test_iteration_stop(self):
         lst_orders = [1, 2, 3]

@@ -4,7 +4,7 @@ class Angry(Mood):
         super().__init__(strength)
 
     def get_patience_factor(self, waiting_time):
-        return round( 1.3 ** (waiting_time/5) * self.strength, 2)
+        return round(( 1.3 ** (waiting_time/5)) * self.strength, 2)
 
     def __repr__(self):
         return super().__repr__()

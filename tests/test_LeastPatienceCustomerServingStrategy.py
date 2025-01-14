@@ -19,16 +19,16 @@ class TestLeastPatienceCustomerServingStrategy(unittest.TestCase):
         }
 
     def test_select_next_order(self):
-        self.customer1.patience = 50
-        self.customer2.patience = 30
-        self.customer3.patience = 70
+        self.customer1.__patience = 50
+        self.customer2.__patience = 30
+        self.customer3.__patience = 70
         next_order = self.strategy.select_next_order(self.orders)
         self.assertEqual(next_order, 2)
 
     def test_select_next_order_equal_patience(self):
-        self.customer1.patience = 100
-        self.customer2.patience = 100
-        self.customer3.patience = 100
+        self.customer1.__patience = 100
+        self.customer2.__patience = 100
+        self.customer3.__patience = 100
         next_order = self.strategy.select_next_order(self.orders)
         self.assertIn(next_order, [1, 2, 3])
 

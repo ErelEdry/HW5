@@ -24,10 +24,10 @@ class TestRandomOrdersStrategy(unittest.TestCase):
         )
 
     def test_initialization(self):
-        self.assertEqual(self.strategy.max_dishes, self.max_dishes)
-        self.assertEqual(self.strategy.max_ingredients, self.max_ingredients)
-        self.assertEqual(self.strategy.ingredients, self.ingredients)
-        self.assertEqual(self.strategy.n_orders, self.n_orders)
+        self.assertEqual(self.strategy.__max_dishes, self.max_dishes)
+        self.assertEqual(self.strategy.__max_ingredients, self.max_ingredients)
+        self.assertEqual(self.strategy.__ingredients, self.ingredients)
+        self.assertEqual(self.strategy.__n_orders, self.n_orders)
 
     @patch('random.choice')
     @patch('random.randint')
@@ -35,7 +35,7 @@ class TestRandomOrdersStrategy(unittest.TestCase):
         mock_randint.return_value = 3
         mock_choice.side_effect = [Chill(), TypeA]
 
-        self.strategy.current = 0
+        self.strategy.__current = 0
         result = self.strategy.__next__()
 
         self.assertEqual(result, 3)
@@ -43,13 +43,13 @@ class TestRandomOrdersStrategy(unittest.TestCase):
         self.assertEqual(mock_choice.call_count, 2)
 
     def test_iteration_stop(self):
-        self.strategy.n_orders = 0
+        self.strategy.__n_orders = 0
         with self.assertRaises(StopIteration):
             self.strategy.__next__()
 
     def test_iteration(self):
-        self.strategy.n_orders = 2
-        self.strategy.current = 0
+        self.strategy.__n_orders = 2
+        self.strategy.__current = 0
 
         with patch('random.choice') as mock_choice, patch('random.randint') as mock_randint:
             mock_randint.return_value = 2

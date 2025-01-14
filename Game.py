@@ -13,7 +13,7 @@ class Game:
         self.lives = 3
         self.game_start = int(time.time())
         self.dictionary_ingredient = {i: ingredient for i, ingredient in enumerate(ingredient_prices.keys())}
-        self.customer_counter = 0
+        self.__customer_counter = 0
         self.money = 0
 
     def get_lives(self):
@@ -30,7 +30,6 @@ class Game:
             stall = FalafelStall(self.serving_strategy, self.ingredient_prices)
             try:
                 group = next(something)
-
                 for customer, dish in group:
                     stall.order(customer, dish)
 
@@ -38,16 +37,15 @@ class Game:
                     try:
                         order_id = stall.get_next_order_id()
                         customer, expected_dish = stall.get_order(order_id)
-
                         while customer.get_patience() > 0:
-                            print("Customer:")
-                            print(customer)
-                            print("Dish: * " + ", ".join(expected_dish.get_ingredients()) + " *")
+                            curr_dish = "Dish: * " + ", ".join(expected_dish.get_ingredients()) + " *"
+                            print(f"Customer:\n{customer}\n{curr_dish}")
                             print("Insert ingredients:")
                             for key, value in self.dictionary_ingredient.items():
                                 print(f"{key}: {value}")
 
                             try:
+
                                 input_ingredients = input()
                                 input_indices = [int(index) for index in input_ingredients.split()]
 
@@ -56,7 +54,6 @@ class Game:
                                     if index not in self.dictionary_ingredient:
                                         raise NoSuchIngredientException(f"Ingredient {index} does not exist.")
                                     player_ingredients.append(self.dictionary_ingredient[index])
-
                                 player_dish = Dish(ingredients=player_ingredients)
 
                                 if sorted(player_dish.get_ingredients()) != sorted(expected_dish.get_ingredients()):
@@ -64,7 +61,6 @@ class Game:
                                         f"Failed to serve a Dish to customer\nError:\nThe suggested dish:\t* {', '.join(player_dish.get_ingredients())} *\nis not as expected:\t* {', '.join(expected_dish.get_ingredients())} *.")
                                     customer.update(waiting_time=customer.get_waiting_time())
                                     if customer.get_patience() <= 0:
-                                        print("Customer left due to wrong dish!")
                                         stall.remove_order(order_id)
                                         self.lives -= 1
                                         break
@@ -78,7 +74,6 @@ class Game:
                                 print(f"Error: {e}. Try again.")
                                 customer.update(waiting_time=customer.get_waiting_time())
                                 if customer.get_patience() <= 0:
-                                    print("Customer left due to waiting!")
                                     stall.remove_order(order_id)
                                     self.lives -= 1
                                     break

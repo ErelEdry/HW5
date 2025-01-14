@@ -21,7 +21,7 @@ class TestLongestWaitingTimeServingStrategy(unittest.TestCase):
 
     @patch('time.time')
     def test_select_next_order(self, mock_time):
-        mock_time.return_value = 100  # Simulate current time
+        mock_time.return_value = 100  # Simulate __current time
         self.customer1.arrive_time = 90  # Waiting time = 10
         self.customer2.arrive_time = 80  # Waiting time = 20
         self.customer3.arrive_time = 95  # Waiting time = 5
@@ -30,7 +30,7 @@ class TestLongestWaitingTimeServingStrategy(unittest.TestCase):
 
     @patch('time.time')
     def test_select_next_order_equal_waiting_time(self, mock_time):
-        mock_time.return_value = 100  # Simulate current time
+        mock_time.return_value = 100  # Simulate __current time
         self.customer1.arrive_time = 90  # Waiting time = 10
         self.customer2.arrive_time = 90  # Waiting time = 10
         self.customer3.arrive_time = 90  # Waiting time = 10

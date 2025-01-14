@@ -5,7 +5,7 @@ class Chill(Mood):
         self.chill_modifier = chill_modifier
 
     def get_patience_factor(self, waiting_time):
-        return round((1.1 ** (waiting_time/5)) * self.strength*self.chill_modifier, 2)
+        return round(1.1 ** (waiting_time / 5) * self.strength * self.chill_modifier, 2)
 
     def __repr__(self):
 

@@ -18,8 +18,8 @@ class TestFalafelStall(unittest.TestCase):
     def test_order(self):
         order_id = self.stall.order(self.customer, self.dish)
         self.assertEqual(order_id, 1)
-        self.assertEqual(len(self.stall.orders), 1)
-        self.assertEqual(self.stall.orders[1], (self.customer, self.dish))
+        self.assertEqual(len(self.stall.__orders), 1)
+        self.assertEqual(self.stall.__orders[1], (self.customer, self.dish))
 
     def test_order_with_invalid_ingredient(self):
         invalid_dish = Dish(ingredients=["falafel", "invalid_ingredient"])
@@ -27,11 +27,11 @@ class TestFalafelStall(unittest.TestCase):
             self.stall.order(self.customer, invalid_dish)
 
     def test_order_count_increments(self):
-        self.assertEqual(self.stall.order_count, 0)
+        self.assertEqual(self.stall.__order_count, 0)
         self.stall.order(self.customer, self.dish)
-        self.assertEqual(self.stall.order_count, 1)
+        self.assertEqual(self.stall.__order_count, 1)
         self.stall.order(self.customer, self.dish)
-        self.assertEqual(self.stall.order_count, 2)
+        self.assertEqual(self.stall.__order_count, 2)
 
 if __name__ == '__main__':
     unittest.main()

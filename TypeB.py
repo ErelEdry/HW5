@@ -1,14 +1,12 @@
-from abc import ABC
 
-from Mood import Mood
 from Explosive import Explosive
 from Furious import Furious
 from Angry import Angry
 from Calm import Calm
 from Chill import Chill
 from Personality import Personality
-
 class TypeB(Personality):
+
     def adjust_mood(self, mood, waiting_time):
         if waiting_time > 120 and isinstance(mood, Furious):
             return Explosive(mood.strength)
